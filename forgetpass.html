@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 95%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background-color: #dcdcdc;
+            color: #333;
+        }
+
+        .search-btn {
+            background-color: #1877f2;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container " id="for_form">
+        <h2>अपना अकाउंट ढूँढें</h2>
+        <p>अपना अकाउंट सर्च करने के लिए कृपया अपना ईमेल या मोबाइल नंबर डालें।</p>
+        <form action="/submit" method="post">
+            <input type="text" name="phone" id="phone" placeholder="ईमेल या मोबाइल नंबर" required>
+            <div syyle="text-align: left;margin-bottom: 30px;margin-top: -15px;">
+                <span id="error_mes" style="color:red;"></span>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" class="cancel-btn" onclick="window.location.href='signin.html'">कैंसल करें</button>
+                <button type="submit" class="search-btn" id="check_num">सर्च करें</button>
+            </div>
+        </form>
+    </div>
+    <div class="container" id="chk_form" style="display:none">
+        <h2>अपना अकाउंट ढूँढें</h2>
+        <p>अपना अकाउंट सर्च करने के लिए कृपया अपना ईमेल या मोबाइल नंबर डालें।</p>
+        <form action="/submit" method="post">
+            <div syyle="text-align: left;margin-bottom: 10px;margin-top: -15px;">
+                <span id="send_mes" style="color:rgb(0, 255, 21);"></span>
+            </div>
+            <input type="text" name="otp" id="otp" placeholder="Please enter OTP" required>
+            <div syyle="text-align: left;margin-bottom: 30px;margin-top: -15px;">
+                <span id="otp_error_mes" style="color:red;"></span>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" class="cancel-btn" onclick="window.location.href='signin.html'">कैंसल करें</button>
+                <button type="submit" class="search-btn" id="check_otp">सर्च करें</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById('check_num').addEventListener('click', function(event) {
+            event.preventDefault();
+            var phone = document.getElementById('phone').value;
+            if (phone) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'data_check.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        // alert(xhr.responseText);
+                        
+                        var mes = xhr.responseText;
+                        if(mes == 1){
+                                var phone = document.getElementById('phone').value;
+                                if (phone) {
+                                    var xhrr = new XMLHttpRequest();
+                                    xhrr.open('POST', 'send_otp.php', true);
+                                    xhrr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                                    xhrr.onreadystatechange = function() {
+                                        if (xhrr.readyState === XMLHttpRequest.DONE) {
+                                            // alert(xhrr.responseText);
+                                            document.getElementById("send_mes").innerHTML = xhrr.responseText;
+                                            document.getElementById('chk_form').style.display = 'block';
+                                            document.getElementById('for_form').style.display = 'none';
+                                        }
+                                    };
+                                    xhrr.send('phone=' + encodeURIComponent(phone));
+                                } else {
+                                    alert('Please enter your phone number.');
+                                }
+                        }else{
+                            document.getElementById("error_mes").innerHTML = 'this number is a not exists!.';
+                        }
+                        
+                    }
+                };
+                xhr.send('phone=' + encodeURIComponent(phone));
+            } else {
+                alert('Please enter the OTP.');
+            }
+        });
+        
+        document.getElementById('check_otp').addEventListener('click', function(event) {
+            event.preventDefault();
+            var otp = document.getElementById('otp').value;
+            if (otp) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'verify_otp.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        // alert(xhr.responseText);
+                        var otp_mes = xhr.responseText;
+                        document.getElementById("otp_error_mes").innerHTML = otp_mes;
+
+                    }
+                };
+                xhr.send('otp=' + encodeURIComponent(otp));
+            } else {
+                alert('Please enter the OTP.');
+            }
+        });
+    </script>
+</body>
+</html>

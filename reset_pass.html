@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Your Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f2f5;
+            margin: 0;
+        }
+        .reset-container {
+            background-color: white;
+            width: 360px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .reset-container h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .reset-container .option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .reset-container .option input {
+            margin-right: 10px;
+        }
+        .reset-container .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: #555;
+        }
+        .reset-container .user-info img {
+            border-radius: 50%;
+            margin-right: 10px;
+            width: 50px;
+            height: 50px;
+        }
+        .reset-container .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+        .reset-container button {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .reset-container button:disabled {
+            background-color: #d8d8d8;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="reset-container">
+        <h2>Reset Your Password</h2>
+        <div class="option">
+            <input type="radio" name="reset-option" id="sms" checked>
+            <label for="sms">Send code via SMS</label>
+        </div>
+        <div class="option">
+            <input type="radio" name="reset-option" id="password">
+            <label for="password">Enter Password to Log In</label>
+        </div>
+        <div class="user-info">
+            <img src="https://via.placeholder.com/50" alt="User Avatar">
+            <div>
+                <div>+918955503853</div>
+                <div>Facebook user</div>
+            </div>
+        </div>
+        <div class="buttons">
+            <button id="notYou">Not you?</button>
+            <button id="continue" disabled>Continue</button>
+        </div>
+    </div>
+
+    <script>
+        const smsOption = document.getElementById('sms');
+        const passwordOption = document.getElementById('password');
+        const continueButton = document.getElementById('continue');
+
+        document.querySelectorAll('input[name="reset-option"]').forEach(input => {
+            input.addEventListener('change', function() {
+                continueButton.disabled = false;
+            });
+        });
+
+        document.getElementById('notYou').addEventListener('click', function() {
+            alert('Redirecting to a different user...');
+        });
+
+        document.getElementById('continue').addEventListener('click', function() {
+            alert('Continuing with selected option...');
+        });
+    </script>
+</body>
+</html>
