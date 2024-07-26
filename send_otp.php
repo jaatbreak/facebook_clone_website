@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['phone'])) {
     $phone = $_POST['phone'];
 
     function sendOtp($phoneNumber) {
-        $apiKey = '1ed43165-3f69-11ef-8b60-0200cd936042';
+        $apiKey = 'e4cda86d-4a37-11ef-8b60-0200cd936042';
         $url = "https://2factor.in/API/V1/{$apiKey}/SMS/+91{$phoneNumber}/AUTOGEN/OTP1";
 
         $curl = curl_init();

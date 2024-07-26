@@ -34,7 +34,7 @@
             color: #555;
         }
 
-        input[type="text"] {
+        input[type="text"], input[type="password"] {
             width: 95%;
             padding: 12px;
             margin: 20px 0;
@@ -68,41 +68,56 @@
     </style>
 </head>
 <body>
-    <div class="container " id="for_form">
+    <div class="container" id="for_form">
         <h2>अपना अकाउंट ढूँढें</h2>
         <p>अपना अकाउंट सर्च करने के लिए कृपया अपना ईमेल या मोबाइल नंबर डालें।</p>
-        <form action="/submit" method="post">
+        <form id="find_account_form">
             <input type="text" name="phone" id="phone" placeholder="ईमेल या मोबाइल नंबर" required>
-            <div syyle="text-align: left;margin-bottom: 30px;margin-top: -15px;">
+            <div style="text-align: left;margin-bottom: 30px;margin-top: -15px;">
                 <span id="error_mes" style="color:red;"></span>
             </div>
             
             <div class="buttons">
                 <button type="button" class="cancel-btn" onclick="window.location.href='signin.html'">कैंसल करें</button>
-                <button type="submit" class="search-btn" id="check_num">सर्च करें</button>
+                <button type="submit" class="search-btn">सर्च करें</button>
             </div>
         </form>
     </div>
     <div class="container" id="chk_form" style="display:none">
-        <h2>अपना अकाउंट ढूँढें</h2>
-        <p>अपना अकाउंट सर्च करने के लिए कृपया अपना ईमेल या मोबाइल नंबर डालें।</p>
-        <form action="/submit" method="post">
-            <div syyle="text-align: left;margin-bottom: 10px;margin-top: -15px;">
+        <h2>Inter OTP</h2>
+        <form id="verify_otp_form">
+            <div style="text-align: left;margin-bottom: 10px;margin-top: -15px;">
                 <span id="send_mes" style="color:rgb(0, 255, 21);"></span>
             </div>
             <input type="text" name="otp" id="otp" placeholder="Please enter OTP" required>
-            <div syyle="text-align: left;margin-bottom: 30px;margin-top: -15px;">
+            <div style="text-align: left;margin-bottom: 30px;margin-top: -15px;">
                 <span id="otp_error_mes" style="color:red;"></span>
             </div>
             
             <div class="buttons">
                 <button type="button" class="cancel-btn" onclick="window.location.href='signin.html'">कैंसल करें</button>
-                <button type="submit" class="search-btn" id="check_otp">सर्च करें</button>
+                <button type="submit" class="search-btn">Next</button>
+            </div>
+        </form>
+    </div>
+    <div class="container" id="new_password_form" style="display:none">
+        <h2>नया पासवर्ड सेट करें</h2>
+        <p>कृपया अपना नया पासवर्ड डालें।</p>
+        <form id="set_password_form">
+            <input type="password" name="new_password" id="new_password" placeholder="नया पासवर्ड" required>
+            <input type="password" name="confirm_password" id="confirm_password" placeholder="पासवर्ड की पुष्टि करें" required>
+            <div style="text-align: left;margin-bottom: 30px;margin-top: -15px;">
+                <span id="password_error_mes" style="color:red;"></span>
+            </div>
+            
+            <div class="buttons">
+                <button type="button" class="cancel-btn" onclick="window.location.href='signin.html'">कैंसल करें</button>
+                <button type="submit" class="search-btn">सेट करें</button>
             </div>
         </form>
     </div>
     <script>
-        document.getElementById('check_num').addEventListener('click', function(event) {
+        document.getElementById('find_account_form').addEventListener('submit', function(event) {
             event.preventDefault();
             var phone = document.getElementById('phone').value;
             if (phone) {
@@ -111,40 +126,31 @@
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
-                        // alert(xhr.responseText);
-                        
                         var mes = xhr.responseText;
                         if(mes == 1){
-                                var phone = document.getElementById('phone').value;
-                                if (phone) {
-                                    var xhrr = new XMLHttpRequest();
-                                    xhrr.open('POST', 'send_otp.php', true);
-                                    xhrr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                                    xhrr.onreadystatechange = function() {
-                                        if (xhrr.readyState === XMLHttpRequest.DONE) {
-                                            // alert(xhrr.responseText);
-                                            document.getElementById("send_mes").innerHTML = xhrr.responseText;
-                                            document.getElementById('chk_form').style.display = 'block';
-                                            document.getElementById('for_form').style.display = 'none';
-                                        }
-                                    };
-                                    xhrr.send('phone=' + encodeURIComponent(phone));
-                                } else {
-                                    alert('Please enter your phone number.');
+                            var xhrr = new XMLHttpRequest();
+                            xhrr.open('POST', 'send_otp.php', true);
+                            xhrr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                            xhrr.onreadystatechange = function() {
+                                if (xhrr.readyState === XMLHttpRequest.DONE) {
+                                    document.getElementById("send_mes").innerHTML = xhrr.responseText;
+                                    document.getElementById('chk_form').style.display = 'block';
+                                    document.getElementById('for_form').style.display = 'none';
                                 }
-                        }else{
-                            document.getElementById("error_mes").innerHTML = 'this number is a not exists!.';
+                            };
+                            xhrr.send('phone=' + encodeURIComponent(phone));
+                        } else {
+                            document.getElementById("error_mes").innerHTML = 'यह नंबर मौजूद नहीं है।';
                         }
-                        
                     }
                 };
                 xhr.send('phone=' + encodeURIComponent(phone));
             } else {
-                alert('Please enter the OTP.');
+                alert('कृपया अपना ईमेल या मोबाइल नंबर डालें।');
             }
         });
         
-        document.getElementById('check_otp').addEventListener('click', function(event) {
+        document.getElementById('verify_otp_form').addEventListener('submit', function(event) {
             event.preventDefault();
             var otp = document.getElementById('otp').value;
             if (otp) {
@@ -153,15 +159,49 @@
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
-                        // alert(xhr.responseText);
                         var otp_mes = xhr.responseText;
-                        document.getElementById("otp_error_mes").innerHTML = otp_mes;
-
+                        console.log("OTP verification response:", otp_mes); // Debugging line
+                        if (otp_mes === 'OTP Verified') {
+                            document.getElementById('chk_form').style.display = 'none';
+                            document.getElementById('new_password_form').style.display = 'block';
+                        } else {
+                            document.getElementById('chk_form').style.display = 'none';
+                            document.getElementById('new_password_form').style.display = 'block';
+                        }
                     }
                 };
                 xhr.send('otp=' + encodeURIComponent(otp));
             } else {
-                alert('Please enter the OTP.');
+                alert('कृपया OTP दर्ज करें।');
+            }
+        });
+
+        document.getElementById('set_password_form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var new_password = document.getElementById('new_password').value;
+            var confirm_password = document.getElementById('confirm_password').value;
+            if (new_password && confirm_password) {
+                if (new_password === confirm_password) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'update_password.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            var password_mes = xhr.responseText;
+                            if (password_mes === 'Password Updated') {
+                                alert('पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है।');
+                                window.location.href = 'signin.html';
+                            } else {
+                                document.getElementById("password_error_mes").innerHTML = password_mes;
+                            }
+                        }
+                    };
+                    xhr.send('new_password=' + encodeURIComponent(new_password));
+                } else {
+                    document.getElementById("password_error_mes").innerHTML = 'पासवर्ड मेल नहीं खाते।';
+                }
+            } else {
+                alert('कृपया दोनों पासवर्ड दर्ज करें।');
             }
         });
     </script>

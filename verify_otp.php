@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['otp'])) {
     $otp = $_POST['otp'];
 
     function verifyOtp($otpSessionId, $otpInput) {
-        $apiKey = '1ed43165-3f69-11ef-8b60-0200cd936042';
+        $apiKey = 'e4cda86d-4a37-11ef-8b60-0200cd936042';
         $url = "https://2factor.in/API/V1/{$apiKey}/SMS/VERIFY/{$otpSessionId}/{$otpInput}";
 
         $curl = curl_init();
@@ -38,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['otp'])) {
 
         if ($verificationResponse['Status'] == 'Success') {
             echo "OTP verified successfully.";
+           // header:location("");
             // Proceed with the next steps after successful OTP verification
         } else {
             echo "Failed to verify OTP: " . htmlspecialchars($verificationResponse['Details']);
