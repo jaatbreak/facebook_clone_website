@@ -104,7 +104,11 @@
         <h2>नया पासवर्ड सेट करें</h2>
         <p>कृपया अपना नया पासवर्ड डालें।</p>
         <form id="set_password_form">
+            <div style="text-align: left;margin-bottom: 10px;margin-top: -15px;">
+                <span id="password_update_success" style="color:rgb(0, 255, 21);"></span>
+            </div>
             <input type="password" name="new_password" id="new_password" placeholder="नया पासवर्ड" required>
+            <input type="hidden" name="phone" id="phone_num_check" >
             <input type="password" name="confirm_password" id="confirm_password" placeholder="पासवर्ड की पुष्टि करें" required>
             <div style="text-align: left;margin-bottom: 30px;margin-top: -15px;">
                 <span id="password_error_mes" style="color:red;"></span>
@@ -120,6 +124,8 @@
         document.getElementById('find_account_form').addEventListener('submit', function(event) {
             event.preventDefault();
             var phone = document.getElementById('phone').value;
+            document.getElementById("phone_num_check").value = phone;
+            
             if (phone) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'data_check.php', true);
@@ -179,24 +185,25 @@
         document.getElementById('set_password_form').addEventListener('submit', function(event) {
             event.preventDefault();
             var new_password = document.getElementById('new_password').value;
+            var phone_num_check = document.getElementById('phone_num_check').value;
             var confirm_password = document.getElementById('confirm_password').value;
             if (new_password && confirm_password) {
                 if (new_password === confirm_password) {
                     var xhr = new XMLHttpRequest();
-                    xhr.open('POST', 'update_password.php', true);
+                    xhr.open('POST', 'update_passord.php', true);
                     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                     xhr.onreadystatechange = function() {
                         if (xhr.readyState === XMLHttpRequest.DONE) {
                             var password_mes = xhr.responseText;
                             if (password_mes === 'Password Updated') {
-                                alert('पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है।');
-                                window.location.href = 'signin.html';
+                                document.getElementById("password_update_success").innerHTML = 'पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है।';
+                                setTimeout(function(){ window.location = "signin.html"; },3000);
                             } else {
                                 document.getElementById("password_error_mes").innerHTML = password_mes;
                             }
                         }
                     };
-                    xhr.send('new_password=' + encodeURIComponent(new_password));
+                    xhr.send('new_password=' + encodeURIComponent(new_password) + '&phone=' + encodeURIComponent(phone_num_check));
                 } else {
                     document.getElementById("password_error_mes").innerHTML = 'पासवर्ड मेल नहीं खाते।';
                 }

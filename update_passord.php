@@ -1,21 +1,25 @@
 <?php
-session_start();
-include './save_data.php'; // Include your database connection
 
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "facebook";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+session_start();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $phone = $_POST['phone'];
     $new_password = $_POST['new_password'];
     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+   
+    
+    $result = mysqli_query($conn,"UPDATE `siginup` SET `password` = '$hashed_password'  WHERE `phone` = '$phone' ");
 
-    // Update the password in the database
-    $stmt = $conn->prepare("UPDATE signupform SET password = ? WHERE phone = ?");
-    $stmt->bind_param("ss", $hashed_password, $_SESSION['phone']); // Assuming phone is stored in session
-    if ($stmt->execute()) {
+    if ($result == true) {
         echo 'Password Updated';
     } else {
         echo 'Failed to update password. Please try again.';
     }
-
-    $stmt->close();
-    $conn->close();
 }
 ?>

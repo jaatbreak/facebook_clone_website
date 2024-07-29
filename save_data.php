@@ -84,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Verify password
             if (password_verify($password, $user['password'])) {
                 // Password is correct, start session and redirect
-                $_SESSION['user_email'] = $email; // Example: store user session
+                $_SESSION['user_detail'] = $user; // Example: store user session
                 header("Location: Dashboard.html"); // Redirect to success page
                 exit();
             } else {
