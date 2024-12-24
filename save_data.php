@@ -5,9 +5,9 @@
 // error_reporting(E_ALL);
 
 // Database connection settings
-$servername = "localhost";
-$username = "root";
-$password = "";
+$servername = "10.127.192.3";
+$username = "aman";
+$password = "Aman@1234";
 $dbname = "facebook";
 
 // Create connection
